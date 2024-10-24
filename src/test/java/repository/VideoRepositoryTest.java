@@ -1,14 +1,17 @@
-package culturoteca.repository;
+package culturemedia.repository;
 
 import java.util.List;
 
+import culturemedia.exception.DurationNotValidException;
+import culturemedia.exception.VideoNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import culturoteca.model.Video;
-import culturoteca.repository.impl.VideoRepositoryImpl;
+import culturemedia.model.Video;
+import culturemedia.repository.impl.VideoRepositoryImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class VideoRepositoryTest {
 
@@ -34,31 +37,34 @@ class VideoRepositoryTest {
     }
 
     @Test
-    void when_FindAll_all_videos_should_be_returned_successfully() {
+    void when_FindAll_all_videos_should_be_returned_successfully() throws VideoNotFoundException {
         List<Video> videos = videoRepository.findAll( );
         assertEquals(6, videos.size());
     }
 
     @Test
-    void when_FindByTitle_only_videos_which_contains_the_word_in_the_title_should_be_returned_successfully() {
+    void when_FindByTitle_only_videos_which_contains_the_word_in_the_title_should_be_returned_successfully() throws VideoNotFoundException {
         List<Video> videos = videoRepository.find( "Clic" );
         assertEquals(2, videos.size());
     }
 
     @Test
-    void when_FindByDuration_only_videos_between_the_range_should_be_returned_successfully() {
+    void when_FindByDuration_only_videos_between_the_range_should_be_returned_successfully() throws DurationNotValidException {
         List<Video> videos = videoRepository.find( 4.5, 5.5 );
         assertEquals(3, videos.size());
     }
 
     @Test
-    void when_FindByTitle_does_not_match_any_video_an_empty_list_should_be_returned_successfully() {
-        assert(false);
+    void when_FindByTitle_does_not_match_any_video_an_empty_list_should_be_returned_successfully() throws VideoNotFoundException {
+        List<Video> videos = videoRepository.find( "Proof" );
+        assertTrue(videos.isEmpty());
+
     }
 
     @Test
-    void when_FindByDuration_does_not_match_any_video_an_empty_list_should_be_returned_successfully() {
-        assert(false);
+    void when_FindByDuration_does_not_match_any_video_an_empty_list_should_be_returned_successfully() throws DurationNotValidException {
+        List<Video> videos = videoRepository.find( 1.0, 2.0 );
+        assertTrue(videos.isEmpty());
     }
 
 }
